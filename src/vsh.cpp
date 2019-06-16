@@ -47,7 +47,7 @@ void Vsh::start() {
 
             STARTUPINFOW info;
             PROCESS_INFORMATION pinfo;
-            winapi.create_process(
+            this->winapi.create_process(
                 nullptr, 
                 winput.get(), 
                 nullptr, 
@@ -59,7 +59,7 @@ void Vsh::start() {
                 &info,
                 &pinfo 
             );
-            winapi.wait_for_single_object(pinfo.hProcess, INFINITE);
+            this->winapi.wait_for_single_object(pinfo.hProcess, INFINITE);
 
             // todo push history 
             input = wstring();
