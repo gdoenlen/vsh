@@ -1,0 +1,13 @@
+.vscode/
+build/
+lib/*
+bin/*
+*.o
+vsh.exe
+
+# conan
+conanbuildinfo.txt
+conanbuildinfo.mak
+conaninfo.txt
+graph_info.json
+install/
