@@ -33,6 +33,9 @@ namespace winapi {
             LPSTARTUPINFOW lpStartupInfo,
             LPPROCESS_INFORMATION lpProcessInformation
         ) const;
+
+        /** Wrapper to windows.h -> WaitForSingleObject */
+        void wait_for_single_object(HANDLE handle, int length) const;
     };
 
     class WinApiException : public std::runtime_error {

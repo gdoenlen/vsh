@@ -1,4 +1,5 @@
 #include <winapi.hpp>
+#include <iostream>
 
 using namespace winapi;
 
@@ -43,5 +44,11 @@ void WindowsApiService::create_process(
             lpProcessInformation)
     ) {
         throw WinApiException("Failed to create process");
+    }
+}
+
+void WindowsApiService::wait_for_single_object(HANDLE handle, int length) const {
+    if (WaitForSingleObject(handle, length)) {
+        throw WinApiException("Failed to wait for object");
     }
 }

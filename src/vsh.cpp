@@ -45,12 +45,25 @@ void Vsh::start() {
             auto winput = make_unique<wchar_t[]>(wcslen(input.c_str()) + 1);
             wcscpy(winput.get(), input.c_str());
 
-            // todo             
-            cout << "TODO: RUNNING PROCESS " << std::endl;
+            STARTUPINFOW info;
+            PROCESS_INFORMATION pinfo;
+            winapi.create_process(
+                nullptr, 
+                winput.get(), 
+                nullptr, 
+                nullptr, 
+                true, 
+                0, 
+                nullptr,
+                nullptr,
+                &info,
+                &pinfo 
+            );
+            winapi.wait_for_single_object(pinfo.hProcess, INFINITE);
 
             // todo push history 
             input = wstring();
-            cout << "VSH" << this->cwd << "> ";
+            cout << "VSH " << this->cwd << "> ";
         }
     }
 }
