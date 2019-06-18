@@ -45,21 +45,22 @@ void Vsh::start() {
             auto winput = make_unique<wchar_t[]>(wcslen(input.c_str()) + 1);
             wcscpy(winput.get(), input.c_str());
 
-            STARTUPINFOW info;
-            PROCESS_INFORMATION pinfo;
-            this->winapi.create_process(
-                nullptr, 
-                winput.get(), 
-                nullptr, 
-                nullptr, 
-                true, 
-                0, 
-                nullptr,
-                nullptr,
-                &info,
-                &pinfo 
-            );
-            this->winapi.wait_for_single_object(pinfo.hProcess, INFINITE);
+            auto info = make_unique<STARTUPINFOW>();
+            auto pinfo = make_unique<PROCESS_INFORMATION>();
+            auto sattr = make_unique<SECURITY_ATTRIBUTES>();
+            sattr->nLength = sizeof(sattr);
+            sattr->bInheritHandle = true;
+            sattr->lpSecurityDescriptor = nullptr;
+            HANDLE stdout_rd, stdout_wr, stdin_rd, stdin_wr;
+
+            // https://docs.microsoft.com/en-us/windows/desktop/ProcThread/creating-a-child-process-with-redirected-input-and-output
+            this->winapi.create_pipe(&stdout_rd, &stdout_wr, sattr.get(), 0);    
+            this->winapi.create_pipe(&stdin_rd, &stdin_wr, sattr.get(), 0);
+            this->winapi.set_handle_information(stdout_rd, HANDLE_FLAG_INHERIT, 0);
+            this->winapi.set_handle_information(stdin_wr, HANDLE_FLAG_INHERIT, 0);
+            this->winapi.create_child_process(winput.get(), info.get(), pinfo.get());
+
+            this->winapi.wait_for_single_object(pinfo->hProcess, INFINITE);
 
             // todo push history 
             input = wstring();

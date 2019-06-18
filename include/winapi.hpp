@@ -36,6 +36,13 @@ namespace winapi {
 
         /** Wrapper to windows.h -> WaitForSingleObject */
         void wait_for_single_object(HANDLE handle, int length) const;
+
+        void create_pipe(PHANDLE std_out_rd, PHANDLE std_out_wr, SECURITY_ATTRIBUTES* sattr, int count) const;
+
+        void create_child_process(wchar_t* cmd, STARTUPINFOW* startup_info, PROCESS_INFORMATION* process_info) const;
+
+        /** Wrapper around windows.h -> SetHandleInformation */
+        void set_handle_information(HANDLE handle, int mask, int flags) const;
     };
 
     class WinApiException : public std::runtime_error {
