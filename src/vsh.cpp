@@ -53,7 +53,7 @@ void Vsh::start() {
             this->winapi.wait_for_single_object(pinfo->hProcess, INFINITE);
 
             // todo push history 
-            input = std::wstring();
+            input.clear();
             std::wcout << "VSH " << this->cwd << "> ";
         }
     }
