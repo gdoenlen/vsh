@@ -11,8 +11,9 @@
 
 using std::getenv;
 using std::vector;
-using std::string;
+using std::wstring;
 using std::stringstream;
+using std::string;
 using std::move;
 using std::cout;
 using std::make_unique;
@@ -41,10 +42,15 @@ int main(int argc, char** argv) {
     while (getline(ss, to, ';')) {
         vec->push_back(move(to));
     }
-    auto user_profile = string(getenv("USERPROFILE"));
     HANDLE hin = GetStdHandle(STD_INPUT_HANDLE);
     auto winapi = WindowsApiService();
-    auto vsh = make_unique<Vsh>(move(user_profile), move(hin), move(winapi)); 
+    auto buffer = make_unique<wchar_t[]>(256);
+
+    // for now we need to use windows.h to get the cwd
+    // mingw doesn't have proper support for std::filesystem
+    winapi.get_cwd(buffer.get(), 256);
+    auto cwd = wstring(buffer.get());
+    auto vsh = make_unique<Vsh>(move(cwd), move(hin), move(winapi)); 
 
     vsh->start();
 

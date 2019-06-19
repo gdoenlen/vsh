@@ -7,20 +7,10 @@
 #include <vsh.hpp>
 #include <winapi.hpp>
 
-using std::shared_ptr;
-using std::vector;
-using std::wstring;
-using std::cout;
-using std::string;
-using std::unique_ptr;
-using std::make_unique;
-using std::wcslen;
-using std::wcscpy;
-
 using namespace vsh;
 using winapi::WindowsApiService;
 
-Vsh::Vsh(string cwd, HANDLE hin, WindowsApiService winapi) 
+Vsh::Vsh(std::wstring cwd, HANDLE hin, WindowsApiService winapi) 
     : cwd(cwd), hin(hin), winapi(winapi) {
 
 }
@@ -28,26 +18,26 @@ Vsh::Vsh(string cwd, HANDLE hin, WindowsApiService winapi)
 void Vsh::start() {
     DWORD count;
     INPUT_RECORD inputRecord;
-    wstring input;
+    std::wstring input;
 
-    cout << "VSH " << this->cwd << "> ";
+    std::wcout << "VSH " << this->cwd << "> ";
     for (;;) {
-        string buffer;
+        std::string buffer;
         do {
             this->winapi.read_console_input(this->hin, &inputRecord, 1, &count);
         } while (inputRecord.EventType != KEY_EVENT || !inputRecord.Event.KeyEvent.bKeyDown);
 
         auto key = inputRecord.Event.KeyEvent.uChar.UnicodeChar; 
-        cout << *process_key_event(key, input);
+        std::cout << *process_key_event(key, input);
 
         if (key == '\r') {
             // awful hack to convert from const wchar_t* to wchar_t* for windows
-            auto winput = make_unique<wchar_t[]>(wcslen(input.c_str()) + 1);
-            wcscpy(winput.get(), input.c_str());
+            auto winput = std::make_unique<wchar_t[]>(std::wcslen(input.c_str()) + 1);
+            std::wcscpy(winput.get(), input.c_str());
 
-            auto info = make_unique<STARTUPINFOW>();
-            auto pinfo = make_unique<PROCESS_INFORMATION>();
-            auto sattr = make_unique<SECURITY_ATTRIBUTES>();
+            auto info = std::make_unique<STARTUPINFOW>();
+            auto pinfo = std::make_unique<PROCESS_INFORMATION>();
+            auto sattr = std::make_unique<SECURITY_ATTRIBUTES>();
             sattr->nLength = sizeof(sattr);
             sattr->bInheritHandle = true;
             sattr->lpSecurityDescriptor = nullptr;
@@ -63,15 +53,15 @@ void Vsh::start() {
             this->winapi.wait_for_single_object(pinfo->hProcess, INFINITE);
 
             // todo push history 
-            input = wstring();
-            cout << "VSH " << this->cwd << "> ";
+            input = std::wstring();
+            std::wcout << "VSH " << this->cwd << "> ";
         }
     }
 }
 
-unique_ptr<string> Vsh::process_key_event(char key, wstring& input) {
+std::unique_ptr<std::string> Vsh::process_key_event(char key, std::wstring& input) {
     // should this be allocated each time?
-    auto buffer = make_unique<string>();
+    auto buffer = std::make_unique<std::string>();
     switch (key) {
         case '\b':
             if (input.size() == 0) { break; }

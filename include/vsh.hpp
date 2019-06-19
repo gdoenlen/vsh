@@ -10,7 +10,7 @@ namespace vsh {
     class Vsh {
         private:
             /** current working directory */
-            std::string cwd;
+            std::wstring cwd;
 
             /** windows handle to stdin */
             const HANDLE hin;
@@ -18,7 +18,7 @@ namespace vsh {
             const winapi::WindowsApiService winapi; 
             
         public:
-            Vsh(std::string cwd, HANDLE hin, winapi::WindowsApiService winapi);
+            Vsh(std::wstring cwd, HANDLE hin, winapi::WindowsApiService winapi);
             void start();
             static std::unique_ptr<std::string> process_key_event(char key, std::wstring& input);
     };

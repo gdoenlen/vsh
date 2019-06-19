@@ -1,5 +1,6 @@
 #include <winapi.hpp>
 #include <iostream>
+#include <cerrno>
 
 using namespace winapi;
 
@@ -86,5 +87,12 @@ void WindowsApiService::create_child_process(
 void WindowsApiService::set_handle_information(HANDLE handle, int mask, int flags) const {
     if (!SetHandleInformation(handle, mask, flags)) {
         throw WinApiException("Failed to set handle information");
+    }
+}
+
+void WindowsApiService::get_cwd(wchar_t* buffer, int len) const {
+    wchar_t* ret = _wgetcwd(buffer, len);
+    if (ret == nullptr) {
+        throw WinApiException("Failed to get cwd");
     }
 }

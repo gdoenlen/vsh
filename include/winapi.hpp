@@ -43,6 +43,9 @@ namespace winapi {
 
         /** Wrapper around windows.h -> SetHandleInformation */
         void set_handle_information(HANDLE handle, int mask, int flags) const;
+
+        /** Wrapper around windows.h -> _getcwd */
+        void get_cwd(wchar_t* buffer, int len) const;
     };
 
     class WinApiException : public std::runtime_error {

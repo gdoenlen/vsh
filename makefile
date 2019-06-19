@@ -10,7 +10,7 @@ OBJS = \
 
 SRCDIR = src
 CXX = g++
-CXXFLAGS = -Wall -Werror -Wextra -O2 -I include -std=c++17
+CXXFLAGS = -Wall -Werror -Wextra -O2 -I include -std=c++17 -lstdc++fs
 
 vsh: $(OBJS) 
 	$(CXX) $^ -o $@
