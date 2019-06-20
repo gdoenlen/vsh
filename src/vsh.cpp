@@ -22,7 +22,6 @@ void Vsh::start() {
 
     std::wcout << "VSH " << this->cwd << "> ";
     for (;;) {
-        std::string buffer;
         do {
             this->winapi.read_console_input(this->hin, &inputRecord, 1, &count);
         } while (inputRecord.EventType != KEY_EVENT || !inputRecord.Event.KeyEvent.bKeyDown);
