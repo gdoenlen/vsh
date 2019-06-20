@@ -20,7 +20,7 @@ void Vsh::start() {
     INPUT_RECORD inputRecord;
     std::wstring input;
 
-    std::wcout << "VSH " << this->cwd << "> ";
+    std::wcout << L"VSH " << this->cwd << L"> ";
     for (;;) {
         do {
             this->winapi.read_console_input(this->hin, &inputRecord, 1, &count);
@@ -53,7 +53,7 @@ void Vsh::start() {
 
             // todo push history 
             input.clear();
-            std::wcout << "VSH " << this->cwd << "> ";
+            std::wcout << L"VSH " << this->cwd << L"> ";
         }
     }
 }

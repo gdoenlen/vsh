@@ -22,15 +22,6 @@ namespace vsh {
             void start();
             static std::unique_ptr<std::string> process_key_event(char key, std::wstring& input);
     };
-
-
-    class Tracker {
-        private:
-
-        public:
-            Tracker();
-            void push(std::shared_ptr<std::string> input) const;
-    };
 };
 
 #endif
