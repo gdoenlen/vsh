@@ -6,13 +6,13 @@ using namespace winapi;
 
 WinApiException::WinApiException(const std::string& message) noexcept
     : std::runtime_error(message) {
-    
+
 }
 
 void WindowsApiService::read_console_input(
-    HANDLE handle, 
-    INPUT_RECORD* ir, 
-    DWORD length, 
+    HANDLE handle,
+    INPUT_RECORD* ir,
+    DWORD length,
     DWORD* count
 ) const {
    if (!ReadConsoleInput(handle, ir, length, count)) {
@@ -30,9 +30,10 @@ void WindowsApiService::create_process(
    LPVOID lpEnvironment,
    LPCWSTR lpCurrentDirectory,
    LPSTARTUPINFOW lpStartupInfo,
-   LPPROCESS_INFORMATION lpProcessInformation 
+   LPPROCESS_INFORMATION lpProcessInformation
 ) const {
-    if (!CreateProcessW(
+    if (
+        !CreateProcessW(
             lpApplicationName,
             lpCommandLine,
             lpProcessAttributes,
@@ -42,7 +43,8 @@ void WindowsApiService::create_process(
             lpEnvironment,
             lpCurrentDirectory,
             lpStartupInfo,
-            lpProcessInformation)
+            lpProcessInformation
+        )
     ) {
         throw WinApiException("Failed to create process");
     }
@@ -55,9 +57,9 @@ void WindowsApiService::wait_for_single_object(HANDLE handle, int length) const 
 }
 
 void WindowsApiService::create_pipe(
-    PHANDLE std_out_rd, 
-    PHANDLE std_out_wr, 
-    SECURITY_ATTRIBUTES* sattr, 
+    PHANDLE std_out_rd,
+    PHANDLE std_out_wr,
+    SECURITY_ATTRIBUTES* sattr,
     int count
 ) const {
     if (!CreatePipe(std_out_rd, std_out_wr, sattr, count)) {
@@ -66,8 +68,8 @@ void WindowsApiService::create_pipe(
 }
 
 void WindowsApiService::create_child_process(
-    wchar_t* cmd, 
-    STARTUPINFOW* startup_info, 
+    wchar_t* cmd,
+    STARTUPINFOW* startup_info,
     PROCESS_INFORMATION* proc_info
 ) const {
     this->create_process(
