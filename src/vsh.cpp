@@ -10,8 +10,7 @@
 using namespace vsh;
 using winapi::WindowsApiService;
 
-Vsh::Vsh(std::wstring cwd, HANDLE hin, WindowsApiService winapi) 
-    : cwd(cwd), hin(hin), winapi(winapi) {
+Vsh::Vsh(std::wstring cwd, HANDLE hin, WindowsApiService winapi) : cwd(cwd), hin(hin), winapi(winapi) {
 
 }
 
@@ -26,7 +25,7 @@ void Vsh::start() {
             this->winapi.read_console_input(this->hin, &inputRecord, 1, &count);
         } while (inputRecord.EventType != KEY_EVENT || !inputRecord.Event.KeyEvent.bKeyDown);
 
-        auto key = inputRecord.Event.KeyEvent.uChar.UnicodeChar; 
+        auto key = inputRecord.Event.KeyEvent.uChar.UnicodeChar;
         std::cout << *process_key_event(key, input);
 
         if (key == '\r') {
@@ -43,7 +42,7 @@ void Vsh::start() {
             HANDLE stdout_rd, stdout_wr, stdin_rd, stdin_wr;
 
             // https://docs.microsoft.com/en-us/windows/desktop/ProcThread/creating-a-child-process-with-redirected-input-and-output
-            this->winapi.create_pipe(&stdout_rd, &stdout_wr, sattr.get(), 0);    
+            this->winapi.create_pipe(&stdout_rd, &stdout_wr, sattr.get(), 0);
             this->winapi.create_pipe(&stdin_rd, &stdin_wr, sattr.get(), 0);
             this->winapi.set_handle_information(stdout_rd, HANDLE_FLAG_INHERIT, 0);
             this->winapi.set_handle_information(stdin_wr, HANDLE_FLAG_INHERIT, 0);
@@ -51,7 +50,7 @@ void Vsh::start() {
 
             this->winapi.wait_for_single_object(pinfo->hProcess, INFINITE);
 
-            // todo push history 
+            // todo push history
             input.clear();
             std::wcout << L"VSH " << this->cwd << L"> ";
         }
@@ -62,21 +61,21 @@ std::unique_ptr<std::string> Vsh::process_key_event(char key, std::wstring& inpu
     // should this be allocated each time?
     auto buffer = std::make_unique<std::string>();
     switch (key) {
-        case '\b':
-            if (input.size() == 0) { break; }
-            buffer->push_back(key);
-            buffer->push_back(' ');
-            buffer->push_back(key);
-            input.pop_back();
-            break;
-        case '\r':
-            buffer->push_back(key);
-            buffer->push_back('\n');
-            break;
-        default:
-            buffer->push_back(key);
-            input.push_back(key);
-            break;
+    case '\b':
+        if (input.size() == 0) { break; }
+        buffer->push_back(key);
+        buffer->push_back(' ');
+        buffer->push_back(key);
+        input.pop_back();
+        break;
+    case '\r':
+        buffer->push_back(key);
+        buffer->push_back('\n');
+        break;
+    default:
+        buffer->push_back(key);
+        input.push_back(key);
+        break;
     }
 
     return buffer;
