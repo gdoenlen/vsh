@@ -8,7 +8,7 @@
 namespace winapi {
 /** A simple wrapper around windows.h */
 class WindowsApiService {
-public:
+    public:
 
     /**
      * Wrapper to windows.h -> ReadConsoleInput
@@ -49,7 +49,7 @@ public:
 };
 
 class WinApiException : public std::runtime_error {
-public:
+    public:
     WinApiException(const std::string& message) noexcept;
 };
 
